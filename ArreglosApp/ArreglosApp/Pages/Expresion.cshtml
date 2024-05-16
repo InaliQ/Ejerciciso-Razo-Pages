@@ -1,0 +1,113 @@
+﻿@page
+@model ArreglosApp.Pages.ExpresionModel
+@{
+    ViewData["Title"] = "Cálculo de expresión";
+}
+
+<h1>Cálculo de expresión</h1>
+
+<form method="post">
+    <div>
+        <label for="a">Valor de 'a':</label>
+        <input type="text" id="a" name="a" />
+    </div>
+    <div>
+        <label for="x">Valor de 'x':</label>
+        <input type="text" id="x" name="x" />
+    </div>
+    <div>
+        <label for="b">Valor de 'b':</label>
+        <input type="text" id="b" name="b" />
+    </div>
+    <div>
+        <label for="y">Valor de 'y':</label>
+        <input type="text" id="y" name="y" />
+    </div>
+    <div>
+        <label for="n">Valor de 'n':</label>
+        <input type="text" id="n" name="n" />
+    </div>
+    <button type="submit">Calcular</button>
+</form>
+
+@if (Request.Method == "POST")
+{
+    double a, x, b, y;
+    int n;
+
+    if (double.TryParse(Request.Form["a"], out a) &&
+        double.TryParse(Request.Form["x"], out x) &&
+        double.TryParse(Request.Form["b"], out b) &&
+        double.TryParse(Request.Form["y"], out y) &&
+        int.TryParse(Request.Form["n"], out n))
+    {
+        double resultado1 = Math.Pow((a * x + b * y), n);
+        <h2>Resultado 1:</h2>
+        <p>El resultado de la expresión (@a)x + (@b)y)^@n es: @resultado1</p>
+
+        <h2>Resultado 2:</h2>
+        <p>El resultado de la expresión \(\sum_{{k=0}}^{{@n}} \binom{{@n}}{{k}} (a*x)^{{@n-k}} (b*y)^{{k}}\) es:</p>
+        <p style="font-family: monospace;">
+            \(\sum_{{k=0}}^{{@n}} \binom{{@n}}{{k}} (a*x)^{{@n-k}} (b*y)^{{k}}\) =
+            @{
+                for (int k = 0; k <= n; k++)
+                {
+                    double termino = Binomial(n, k) * Math.Pow(a * x, n - k) * Math.Pow(b * y, k);
+                    if (k == n)
+                    {
+                        <text>@termino</text>
+                    }
+                    else
+                    {
+                        <text>@termino + </text>
+                    }
+                }
+            }
+        </p>
+
+        <h2>Resultado 3:</h2>
+        <p>El resultado de la expresión \(\frac{{@n!}}{{k!(@n-k)!}}\) es:</p>
+        <p style="font-family: monospace;">
+            @{
+                for (int k = 0; k <= n; k++)
+                {
+                    double termino = Factorial(n) / (Factorial(k) * Factorial(n - k));
+                    if (k == n)
+                    {
+                        <text>@termino</text>
+                    }
+                    else
+                    {
+                        <text>@termino + </text>
+                    }
+                }
+            }
+        </p>
+    }
+    else
+    {
+        <p style="color: red;">Por favor, ingresa valores válidos para 'a', 'x', 'b', 'y' y 'n'.</p>
+    }
+}
+
+@{
+     double Binomial(int n, int k)
+    {
+        double resultado = 1;
+        for (int i = 1; i <= k; i++)
+        {
+            resultado *= (double)(n - i + 1) / i;
+        }
+        return resultado;
+    }
+
+     double Factorial(int n)
+    {
+        double resultado = 1;
+        for (int i = 2; i <= n; i++)
+        {
+            resultado *= i;
+        }
+        return resultado;
+    }
+}

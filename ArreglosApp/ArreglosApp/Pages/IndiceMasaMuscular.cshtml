@@ -1,0 +1,69 @@
+﻿@page
+@model ArreglosApp.Pages.IndiceMasaMuscularModel
+@{
+    ViewData["Title"] = "Calculadora IMC";
+}
+
+<h1>Calculadora de Índice de Masa Corporal (IMC)</h1>
+
+<form method="post">
+    <div>
+        <label for="peso">Peso (kg):</label>
+        <input type="text" id="peso" name="Peso" />
+    </div>
+    <div>
+        <label for="estatura">Estatura (m):</label>
+        <input type="text" id="estatura" name="Estatura" />
+    </div>
+    <button type="submit">Calcular IMC</button>
+</form>
+
+@{
+    if (Request.Method == "POST")
+    {
+        double peso, estatura;
+        if (double.TryParse(Request.Form["Peso"], out peso) && double.TryParse(Request.Form["Estatura"], out estatura))
+        {
+            double imc = peso / (estatura * estatura);
+            string clasificacion;
+            string imagenUrl;
+
+            switch (imc)
+            {
+                case double n when (n < 18):
+                    clasificacion = "Peso Bajo";
+                    imagenUrl = "url_imagen_peso_bajo.jpg";
+                    break;
+                case double n when (n >= 18 && n < 25):
+                    clasificacion = "Peso Normal";
+                    imagenUrl = "url_imagen_peso_normal.jpg";
+                    break;
+                case double n when (n >= 25 && n < 27):
+                    clasificacion = "Sobre peso";
+                    imagenUrl = "url_imagen_sobre_peso.jpg";
+                    break;
+                case double n when (n >= 27 && n < 30):
+                    clasificacion = "Obesidad grado I";
+                    imagenUrl = "url_imagen_obesidad_grado_1.jpg";
+                    break;
+                case double n when (n >= 30 && n < 40):
+                    clasificacion = "Obesidad grado II";
+                    imagenUrl = "url_imagen_obesidad_grado_2.jpg";
+                    break;
+                default:
+                    clasificacion = "Obesidad grado III";
+                    imagenUrl = "url_imagen_obesidad_grado_3.jpg";
+                    break;
+            }
+
+            <h2>Resultado</h2>
+            <p>IMC: @imc</p>
+            <p>Clasificación: @clasificacion</p>
+            <img src="@imagenUrl" alt="Recomendaciones" />
+        }
+        else
+        {
+            <p style="color: red;">Por favor, ingresa valores válidos para el peso y la estatura.</p>
+        }
+    }
+}

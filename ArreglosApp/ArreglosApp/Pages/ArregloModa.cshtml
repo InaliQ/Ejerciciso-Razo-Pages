@@ -1,0 +1,54 @@
+﻿@page
+@model ArreglosApp.Pages.ArregloModaModel
+@{
+    ViewData["Title"] = "Números Aleatorios";
+}
+
+<h1>Números Aleatorios</h1>
+
+@{ 
+    int[] numeros = new int[20];
+    Random rnd = new Random();
+    for (int i = 0; i < numeros.Length; i++)
+    {
+        numeros[i] = rnd.Next(101); 
+    }
+
+ 
+    <h2>Arreglo Aleatorio:</h2>
+    <p>@string.Join(" ", numeros)</p>
+
+   
+    int suma = numeros.Sum();
+    <h2>Suma:</h2>
+    <p>@suma</p>
+
+   
+    double promedio = numeros.Average();
+    <h2>Promedio:</h2>
+    <p>@promedio</p>
+
+   
+    var agrupados = numeros.GroupBy(x => x);
+    var moda = agrupados.Where(g => g.Count() == agrupados.Max(x => x.Count())).Select(g => g.Key);
+    <h2>Moda:</h2>
+    <p>@string.Join(" y ", moda)</p>
+
+   
+    Array.Sort(numeros);
+    double mediana;
+    if (numeros.Length % 2 == 0)
+    {
+        mediana = (numeros[numeros.Length / 2] + numeros[numeros.Length / 2 - 1]) / 2.0;
+    }
+    else
+    {
+        mediana = numeros[numeros.Length / 2];
+    }
+    <h2>Mediana:</h2>
+    <p>@mediana</p>
+
+   
+    <h2>Arreglo Ordenado:</h2>
+    <p>@string.Join(" ", numeros)</p>
+}
